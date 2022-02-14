@@ -1,8 +1,18 @@
-package = []
+[[package]]
+name = "python-magic"
+version = "0.4.25"
+description = "File type identification using libmagic"
+category = "main"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "c595a0588c25d58f3e3834ad7169126836d262b925fe6ca9b5d540dcf301d254"
+content-hash = "96b6686dea21bcb031d75f7b288f8c1a58da3639df4db5e99481bf36e35ed58d"
 
 [metadata.files]
+python-magic = [
+    {file = "python-magic-0.4.25.tar.gz", hash = "sha256:21f5f542aa0330f5c8a64442528542f6215c8e18d2466b399b0d9d39356d83fc"},
+    {file = "python_magic-0.4.25-py2.py3-none-any.whl", hash = "sha256:1a2c81e8f395c744536369790bd75094665e9644110a6623bcc3bbea30f03973"},
+]

@@ -66,7 +66,7 @@
           version = "0.1.0";
           format = "pyproject";
           nativeBuildInputs = with python.pkgs; [ poetry-core ];
-          propagatedBuildInputs = with python.pkgs; [ ];
+          propagatedBuildInputs = with python.pkgs; [ python_magic ];
           src = ./.;
           checkInputs = with pkgs; [ mypy ];
           checkPhase = ''

@@ -5,6 +5,8 @@ import shutil
 import subprocess
 from pathlib import Path
 
+import magic
+
 
 def move_not_my_repos(home_path: Path) -> None:
     """move repos that are not mine to gits/NotMyGits"""
@@ -31,10 +33,37 @@ def move_not_my_repos(home_path: Path) -> None:
                         print(f"FAILED TO MOVE {child} TO TRASH {err}\n")
 
 
-def move_files(home_path: Path, extensions: list[str], destination: Path) -> None:
-    """move files"""
+def move_files_extension(home_path: Path, extensions: list[str], destination: Path) -> None:
+    """move files using extension"""
     for child in home_path.iterdir():
         if child.is_file() and [s for s in child.suffixes if any(xs in s for xs in extensions)]:
+            destination.mkdir(exist_ok=True)
+            moved = ""
+            try:
+                moved = shutil.move(child, destination)
+            except shutil.Error as err:
+                print(err)
+                continue
+            print(f"{child} -> {moved}")
+
+
+def move_files_magic(home_path: Path, doc_path: Path) -> None:
+    """move files using magic"""
+    for child in home_path.iterdir():
+        if not child.name.startswith(".") and child.is_file() and child.read_text:
+            mime = magic.from_file(child, mime=True)
+            destination: Path
+            match mime:
+                case "text/plain":
+                    destination = doc_path.joinpath("text")
+                case "application/json":
+                    destination = doc_path
+                case "application/vnd.oasis.opendocument.graphics":
+                    destination = doc_path
+                case "application/epub+zip":
+                    destination = doc_path.joinpath("epub")
+                case _:
+                    continue
             destination.mkdir(exist_ok=True)
             moved = ""
             try:
@@ -71,7 +100,9 @@ def main() -> None:
         ([".stl"], doc_path.joinpath("3dprint")),
         ([".txt", ".log", ".patch"], doc_path.joinpath("text")),
     ]:
-        move_files(home_path, ext, dest)
+        move_files_extension(home_path, ext, dest)
+
+    move_files_magic(home_path, doc_path)
 
 
 if __name__ == "__main__":
