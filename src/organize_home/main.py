@@ -33,18 +33,11 @@ def move_not_my_repos(home_path: Path) -> None:
                         print(f"FAILED TO MOVE {child} TO TRASH {err}\n")
 
 
-def move_files_extension(home_path: Path, extensions: list[str], destination: Path) -> None:
+def move_files_extension(home_path: Path, extensions: list[str], destination_dir: Path) -> None:
     """move files using extension"""
     for child in home_path.iterdir():
         if child.is_file() and [s for s in child.suffixes if any(xs in s for xs in extensions)]:
-            destination.mkdir(exist_ok=True)
-            moved = ""
-            try:
-                moved = shutil.move(child, destination)
-            except shutil.Error as err:
-                print(err)
-                continue
-            print(f"{child} -> {moved}")
+            move_with_shutil(child, destination_dir)
 
 
 def move_files_magic(home_path: Path, doc_path: Path) -> None:
@@ -52,26 +45,31 @@ def move_files_magic(home_path: Path, doc_path: Path) -> None:
     for child in home_path.iterdir():
         if not child.name.startswith(".") and child.is_file() and child.read_text:
             mime = magic.from_file(child, mime=True)
-            destination: Path
+            destination_dir: Path
             match mime:
                 case "text/plain":
-                    destination = doc_path.joinpath("text")
+                    destination_dir = doc_path.joinpath("text")
                 case "application/json":
-                    destination = doc_path
+                    destination_dir = doc_path
                 case "application/vnd.oasis.opendocument.graphics":
-                    destination = doc_path
+                    destination_dir = doc_path
                 case "application/epub+zip":
-                    destination = doc_path.joinpath("epub")
+                    destination_dir = doc_path.joinpath("epub")
                 case _:
                     continue
-            destination.mkdir(exist_ok=True)
-            moved = ""
-            try:
-                moved = shutil.move(child, destination)
-            except shutil.Error as err:
-                print(err)
-                continue
-            print(f"{child} -> {moved}")
+            move_with_shutil(child, destination_dir)
+
+
+def move_with_shutil(file_to_move: Path, destination_dir: Path) -> None:
+    """move a file with shutil"""
+    destination_dir.mkdir(exist_ok=True)
+    path_after_moving = ""
+    try:
+        path_after_moving = shutil.move(file_to_move, destination_dir)
+    except shutil.Error as err:
+        print(err)
+        return
+    print(f"{file_to_move} -> {path_after_moving}")
 
 
 def main() -> None:
