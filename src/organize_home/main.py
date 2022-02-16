@@ -67,20 +67,35 @@ def main() -> None:
     doc_path = home_path.joinpath("Documents")
     move_not_my_repos(home_path)
 
+    dir_dict: dict[str, Path] = {
+        "archives": doc_path.joinpath("compressedarchives"),
+        "images": doc_path.joinpath("bookmarkpics"),
+        "videos": home_path.joinpath("Videos", "mp44"),
+        "text": doc_path.joinpath("text"),
+        "epub": doc_path.joinpath("epub"),
+        "misc": doc_path.joinpath("misc"),
+        "docs": doc_path,
+    }
+
     ext_dict: dict[Path, list[str]] = {
-        doc_path.joinpath("bookmarkpics"): [".jpg", ".jpeg", ".png", ".gif"],
-        home_path.joinpath("Videos", "mp44"): [".mp4", ".webm", ".mov", ".mkv"],
-        doc_path.joinpath("compressedarchives"): [".zst", ".xz", ".zip", ".tar", ".bz2", ".7z", ".gz"],
+        dir_dict["archives"]: [".zst", ".xz", ".zip", ".tar", ".bz2", ".7z", ".gz"],
+        dir_dict["misc"]: [".key", ".asc"],
         doc_path.joinpath("ergodoxlayout"): [".hex"],
         doc_path.joinpath("3dprint"): [".stl"],
-        doc_path.joinpath("text"): [".txt", ".log", ".patch"],
-        doc_path: [".pdf", ".docx", ".odt", ".key", ".asc"],
     }
 
     mime_dict: dict[Path, list[str]] = {
-        doc_path.joinpath("text"): ["text/plain"],
-        doc_path.joinpath("epub"): ["application/epub+zip"],
-        doc_path: ["application/json", "application/vnd.oasis.opendocument.graphics"],
+        dir_dict["images"]: ["image/png", "image/jpeg", "image/gif"],
+        dir_dict["videos"]: ["video/mp4", "video/webm", "video/quicktime", "video/x-matroska"],
+        dir_dict["text"]: ["text/plain", "text/x-diff"],
+        dir_dict["epub"]: ["application/epub+zip"],
+        dir_dict["docs"]: [
+            "application/json",
+            "application/vnd.oasis.opendocument.graphics",
+            "application/vnd.oasis.opendocument.text",
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            "application/pdf",
+        ],
     }
 
     for dest, ext in ext_dict.items():
