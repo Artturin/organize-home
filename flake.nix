@@ -22,15 +22,15 @@
           inherit system;
           overlays = [ poetry2nix.overlay
           (self: super: {
-            mypy = super.python310Packages.toPythonApplication (super.python310Packages.mypy.overridePythonAttrs(old: rec {
-              version = "unstable-2022-02-10";
-              src = super.fetchFromGitHub {
-                owner = "python";
-                repo = "mypy";
-                rev = "129dba468c235fbdc01f608736554061368bcff3";
-                sha256 = "sha256-soI4vlb9IyVs+ilzdsg6hg6UV4x6JOiAnzdIYJIEmJ8=";
-              };
-            }));
+            #mypy = super.python310Packages.toPythonApplication (super.python310Packages.mypy.overridePythonAttrs(old: rec {
+            #  version = "unstable-2022-02-10";
+            #  src = super.fetchFromGitHub {
+            #    owner = "python";
+            #    repo = "mypy";
+            #    rev = "129dba468c235fbdc01f608736554061368bcff3";
+            #    sha256 = "sha256-soI4vlb9IyVs+ilzdsg6hg6UV4x6JOiAnzdIYJIEmJ8=";
+            #  };
+            #}));
           })
           ];
         };
